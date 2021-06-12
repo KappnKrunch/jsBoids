@@ -1,5 +1,5 @@
 let boids = [];
-let count = 500;
+let count = 300;
 let grid = new Map();
 
 function setup() {

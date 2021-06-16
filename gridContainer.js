@@ -1,38 +1,45 @@
 class GridContainer{
   constructor(){
-    this.dirs = createVector(0,0);
-    this.positions = createVector(0,0);
-    this.positionCounts = 0;
+    this.boids = [];
+    this.savedDir = false;
+    this.dir;
   }
   
-  addDir(dir){
-    this.dirs.add(dir);
-  }
-  
-  addPos(pos){
-    this.positions.add(pos);
-    this.positionsCount++;
-  }
-  
-  getDir(){
-    return this.dirs.normalize();
+  addBoid(boid){
+    this.boids.push(boid);
   }
   
   getRAWDir(){
-    return this.dirs;
+    if(!this.savedDir){
+      let dir = createVector(0,0);
+    
+      for(let i in this.boids){
+        dir.add(this.boids[i].getDir());
+      }
+      
+      this.saved = true;
+      this.dir = dir;
+    }
+    
+    return this.dir;
   }
   
-  getAvoidDir(pos){
-    print(p5.Vector.mult(this.positions, this.positionsCount));
-    let dir = p5.Vector.sub(p5.Vector.div(this.positions, this.positionsCount), pos);
+  getDir(){
+    return this.getRAWDir().normalize();
+  }
+  
+  getAvoid(pos){
+    let dir = createVector(1,0);
+    let diff;
     
-    
-    
-    if(dir.mag() <= 1){
-      return dir;
+    for(let i in this.boids){
+      diff = p5.Vector.sub(pos, this.boids[i].getPos());
+      
+      if(diff.mag() < 10){
+        dir.add(diff);
+      }
     }
-    else{
-      return dir.normalize();
-    }
+    
+    return dir.normalize();
   }
 }

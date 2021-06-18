@@ -13,7 +13,7 @@ class Boids{
   
   draw(){
     this.grid.clear();
-    let gridSize = 10;
+    let gridSize = 15;
     let key;
     let pos;
 
@@ -21,7 +21,6 @@ class Boids{
       pos = p5.Vector.mult(this.boids[i].getPos(), createVector(gridSize/width,gridSize/height));
       pos.x = round(pos.x);
       pos.y = round(pos.y);
-      pos = p5.Vector.mult(pos, createVector(width/gridSize,height/gridSize));
 
       key = "" + round(pos.x) + "," + round(pos.y);
 
@@ -37,27 +36,32 @@ class Boids{
       pos = p5.Vector.mult(this.boids[i].getPos(), createVector(gridSize/width, gridSize/height));
       pos.x = round(pos.x);
       pos.y = round(pos.y);
-      pos = p5.Vector.mult(pos, createVector(width/gridSize,height/gridSize));
 
       key = "" + round(pos.x) + "," + round(pos.y);
+      
+      
 
-      let dir = this.boids[i].getDir();
+      let avgDir = this.boids[i].getDir();
       let avoidDir = createVector(0,0);
-      let avoidCount = 0;
-      dir.add(p5.Vector.mult(this.grid.get(key).getDir(),0.05));
+      let convDir = createVector(0,0);
+      let radius = 2;
 
-      for(let x =-3; x <= 3; x++){
-        for(let y = -3; y <= 3; y++){
-          key = "" + round((pos.x + x*width)/gridSize)*gridSize +"," + round((pos.y + y*height)/gridSize)*gridSize;
+      for(let x =-radius; x <= radius; x++){
+        for(let y = -radius; y <= radius; y++){
+          key = "" + round((pos.x + x*width/gridSize)) +"," + round((pos.y + y*height/gridSize));
           if(this.grid.has(key)){
-            let strength = (18 - x*x + y*y)/10*18;
-            dir.add(p5.Vector.mult(this.grid.get(key).getDir(), strength));
-            //avoidDir.add(p5.Vector.mult(p5.Vector.sub(this.boids[i].getPos(), this.grid.get(key).getAvoid()), strength));
+            let strength = (2*radius*radius - x*x + y*y)/10*2*radius*radius;
+            avgDir.add(p5.Vector.mult(this.grid.get(key).getDir(), strength));
+            avoidDir.add(p5.Vector.mult(this.grid.get(key).getAvoid(this.boids[i].getPos()), strength));
+            convDir.add(p5.Vector.mult(this.grid.get(key).getConvergenceDir(this.boids[i].getPos()), strength));
           }
         }
       }
 
-      dir.add(p5.Vector.mult(avoidDir.normalize(),0));
+      let dir = p5.Vector.mult(this.boids[i].getDir(), 5);
+      dir.add(p5.Vector.mult(avgDir, 4));
+      dir.add(p5.Vector.mult(convDir, 0.05));
+      dir.add(p5.Vector.mult(avoidDir,2));
       dir.add(p5.Vector.random2D().normalize().mult(0.05));
 
       this.boids[i].setDir(dir);
@@ -66,7 +70,7 @@ class Boids{
     }
   }
   
-  setColorRange(a,b){
+  setColorRange(a, b){
     this.colorA = a;
     this.colorB = b;
     let trimColor;
@@ -88,4 +92,6 @@ class Boids{
     
     this.count++;
   }
+  
+  add
 }

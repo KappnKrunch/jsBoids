@@ -3,6 +3,8 @@ class GridContainer{
     this.boids = [];
     this.savedDir = false;
     this.dir;
+    this.avgPos;
+    this.savedPos = false;
   }
   
   addBoid(boid){
@@ -29,17 +31,36 @@ class GridContainer{
   }
   
   getAvoid(pos){
-    let dir = createVector(1,0);
+    let dir = createVector(0,0);
     let diff;
     
     for(let i in this.boids){
       diff = p5.Vector.sub(pos, this.boids[i].getPos());
       
-      if(diff.mag() < 10){
-        dir.add(diff);
-      }
+      dir.add(diff);
     }
     
     return dir.normalize();
+  }
+  
+  getAvgPos(){
+    if(!this.savedPos){
+      let pos = createVector(0,0);
+    
+      for(let i in this.boids){
+        pos.add(this.boids[i].getPos());
+
+      }
+
+      this.avgPos = pos.div(this.boids.length);
+
+      this.savedPos = true;
+    }
+    
+    return this.avgPos;
+  }
+  
+  getConvergenceDir(pos){
+    return p5.Vector.sub(this.getAvgPos(),pos).normalize();
   }
 }

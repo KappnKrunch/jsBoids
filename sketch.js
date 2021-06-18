@@ -15,9 +15,10 @@ function draw() {
   background(220);
   
   boidsGroup1.draw();
-  boidsGroup2.draw();
+  //boidsGroup2.draw();
 }
 
 function mouseClicked() {
   boidsGroup1.addBoid(mouseX, mouseY);
+  print("clk");
 }

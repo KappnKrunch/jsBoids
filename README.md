@@ -1,1 +1,1 @@
-# jsBoids
+# [jsBoids](https://kappnkrunch.github.io/jsBoids/)
